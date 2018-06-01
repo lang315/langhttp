@@ -1,16 +1,17 @@
 package LangHttp
 
 import (
-	"net/http/cookiejar"
 	"net/http"
-	"time"
+	"net/http/cookiejar"
 	"net/url"
+	"time"
 )
 
 type Client struct {
 	c           *http.Client
 	FixedHeader map[string]string
 	Cookie      map[string]string
+	transport *http.Transport
 }
 
 var (
@@ -19,15 +20,22 @@ var (
 
 func NewClient() *Client {
 	jar, _ := cookiejar.New(nil)
-	//proxyUrl, _ := url.Parse("http://127.0.0.1:8888")
-	//http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyUrl)}
-	return &Client{
-		c: &http.Client{
-			Timeout:   time.Second * 60,
-			Jar:       jar,
-			//Transport: &http.Transport{Proxy: http.ProxyURL(proxyUrl)},
-		},
+	c := &Client{c: &http.Client{
+		Timeout: time.Second*60,
+		Jar: jar,
+	}}
+	c.transport = &http.Transport{
+
 	}
+
+	return c
+}
+
+
+// thu chay xem dc chua :v
+func (self *Client) SetProxy(proxy string) {
+	proxyUrl, _ := url.Parse(proxy)
+	self.transport.Proxy = http.ProxyURL(proxyUrl)
 }
 
 func (self *Client) Get(urlGet string) (*Response, error) {
