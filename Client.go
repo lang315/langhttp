@@ -24,15 +24,15 @@ func NewClient() *Client {
 		Timeout: time.Second*60,
 		Jar: jar,
 	}}
-	c.transport = &http.Transport{
 
+	c.transport = &http.Transport{
 	}
+
+	c.c.Transport = c.transport
 
 	return c
 }
 
-
-// thu chay xem dc chua :v
 func (self *Client) SetProxy(proxy string) {
 	proxyUrl, _ := url.Parse(proxy)
 	self.transport.Proxy = http.ProxyURL(proxyUrl)
